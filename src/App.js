@@ -13,12 +13,16 @@ class App extends React.Component {
         [2, 3, undefined, 10],
         [8, 9, 6, 12],
         [7, 1, 5, 11],
-        [16, 13, 14, 15],
+        [4, 13, 14, 15],
       ],
     }
   }
 
-  searchEmptyPosition = () => {
+  /**
+   * This function get the empty position
+   * @return {null}
+   */
+  getEmptyPosition = () => {
     const { tab } = this.state;
     let elementEmpty = null
     tab.forEach((el, index) => {
@@ -34,69 +38,104 @@ class App extends React.Component {
     return elementEmpty;
   }
 
-  changePosition = ({ value, elementActive, elementEmpty }) => {
-    const { tab } = this.state;
-    const a = tab.map((row, index) => {
-      if (index === elementActive.row) {
+  /**
+   * This function takes as a parameter iterateOn in order to iterate over it
+   * and find the position provided by elementActiveOrEmpty 
+   * to change the value by changeBy
+   * @param tab
+   * @param iterateOn
+   * @param changeBy
+   * @return {*}
+   */
+  handleChangePosition = ({ iterateOn, elementActiveOrEmpty, changeBy }) => {
+    return iterateOn.map((row, index) => {
+      if (index === elementActiveOrEmpty.row) {
         return row.map((cell, index) => {
-          if (index === elementActive.cell) {
-            return undefined
+          if (index === elementActiveOrEmpty.cell) {
+            return changeBy
           }
           return cell
         })
       }
       return row
-    })
-    const b = a.map((row, index) => {
-      if (index === elementEmpty.row) {
-        return row.map((cell, index) => {
-          if (index === elementEmpty.cell) {
-            return value
-          }
-          return cell
-        })
-      }
-      return row
-    })
-    this.setState({
-      tab: b
     })
   }
 
-  isNearToEmpty = ({ value, indexRow, indexColumn}) => {
-    const elementEmpty = this.searchEmptyPosition();
+  /**
+   * First change position of the undefined element
+   * Then change position of the element that the user has clicked
+   * @param value
+   * @param elementActive
+   * @param elementEmpty
+   */
+  changePosition = ({ value, elementActive, elementEmpty }) => {
+    const { tab } = this.state;
+    const tabWithUndefinedPositionChanged = this.handleChangePosition({
+      iterateOn: tab,
+      elementActiveOrEmpty: elementActive,
+      changeBy: undefined
+    })
+    const newTab = this.handleChangePosition({
+      iterateOn: tabWithUndefinedPositionChanged,
+      elementActiveOrEmpty: elementEmpty,
+      changeBy: value
+    })
+    this.setState({
+      tab: newTab
+    })
+  }
+
+  isOnTheSameCell = (elementActive, elementEmpty) => {
+    return elementActive.row === elementEmpty.row && elementActive.cell === elementEmpty.cell
+  }
+
+  isOnTheCorner = (elementActive, elementEmpty) => {
+    if (elementActive.row-1 === elementEmpty.row && elementActive.cell+1 === elementEmpty.cell) {
+      return true;
+    }
+    if (elementActive.row+1 === elementEmpty.row && elementActive.cell-1 === elementEmpty.cell) {
+      return true;
+    }
+    if (elementActive.row-1 === elementEmpty.row && elementActive.cell-1 === elementEmpty.cell) {
+      return true;
+    }
+    if (elementActive.row+1 === elementEmpty.row && elementActive.cell+1 === elementEmpty.cell) {
+      return true;
+    }
+    return false
+  }
+
+  isNearToEmpty = (elementActive, elementEmpty) => {
+    if (elementActive.row === elementEmpty.row || elementActive.row+1 === elementEmpty.row || elementActive.row-1 === elementEmpty.row) {
+      if (elementActive.cell === elementEmpty.cell || elementActive.cell + 1 === elementEmpty.cell || elementActive.cell - 1 === elementEmpty.cell) {
+        return true
+      }
+      return false;
+    }
+    return false;
+  }
+
+  onClickOnCell = ({ value, indexRow, indexColumn}) => {
+    const elementEmpty = this.getEmptyPosition();
     const elementActive = {
       row: indexColumn,
       cell: indexRow,
     }
-    // On the same cell
-    if (elementActive.row === elementEmpty.row && elementActive.cell === elementEmpty.cell) {
+    if (this.isOnTheSameCell(elementActive, elementEmpty)) {
+      return;
+    }
+    if (this.isOnTheCorner(elementActive, elementEmpty)) {
       return;
     }
 
-    // On the diagonal
-    if (elementActive.row-1 === elementEmpty.row && elementActive.cell+1 === elementEmpty.cell) {
+    if (!this.isNearToEmpty(elementActive, elementEmpty)) {
       return;
     }
-    if (elementActive.row+1 === elementEmpty.row && elementActive.cell-1 === elementEmpty.cell) {
-      return;
-    }
-    if (elementActive.row-1 === elementEmpty.row && elementActive.cell-1 === elementEmpty.cell) {
-      return;
-    }
-    if (elementActive.row+1 === elementEmpty.row && elementActive.cell+1 === elementEmpty.cell) {
-      return;
-    }
-
-    if (elementActive.row === elementEmpty.row || elementActive.row+1 === elementEmpty.row || elementActive.row-1 === elementEmpty.row) {
-      if (elementActive.cell === elementEmpty.cell || elementActive.cell+1 === elementEmpty.cell || elementActive.cell-1 === elementEmpty.cell) {
-        this.changePosition({
-          value,
-          elementActive,
-          elementEmpty
-        });
-      }
-    }
+    this.changePosition({
+      value,
+      elementActive,
+      elementEmpty
+    });
   }
 
   displayRow = (column, indexColumn) => {
@@ -104,7 +143,7 @@ class App extends React.Component {
       <button
         key={`${generateRandomNumber()}-${row}`}
         className="button"
-        onClick={() => this.isNearToEmpty({
+        onClick={() => this.onClickOnCell({
           value: row,
           indexRow,
           indexColumn
