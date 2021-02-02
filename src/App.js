@@ -68,9 +68,25 @@ class App extends React.Component {
       row: indexColumn,
       cell: indexRow,
     }
+    // On the same cell
     if (elementActive.row === elementEmpty.row && elementActive.cell === elementEmpty.cell) {
       return;
     }
+
+    // On the diagonal
+    if (elementActive.row-1 === elementEmpty.row && elementActive.cell+1 === elementEmpty.cell) {
+      return;
+    }
+    if (elementActive.row+1 === elementEmpty.row && elementActive.cell-1 === elementEmpty.cell) {
+      return;
+    }
+    if (elementActive.row-1 === elementEmpty.row && elementActive.cell-1 === elementEmpty.cell) {
+      return;
+    }
+    if (elementActive.row+1 === elementEmpty.row && elementActive.cell+1 === elementEmpty.cell) {
+      return;
+    }
+
     if (elementActive.row === elementEmpty.row || elementActive.row+1 === elementEmpty.row || elementActive.row-1 === elementEmpty.row) {
       if (elementActive.cell === elementEmpty.cell || elementActive.cell+1 === elementEmpty.cell || elementActive.cell-1 === elementEmpty.cell) {
         console.log('elementActive : ', elementActive);
