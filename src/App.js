@@ -10,9 +10,10 @@ class App extends React.Component {
     super(props);
     this.state = {
       tab: [
-        [2, 3, undefined],
-        [8, 9, 6],
-        [7, 1, 5],
+        [2, 3, undefined, 10],
+        [8, 9, 6, 12],
+        [7, 1, 5, 11],
+        [16, 13, 14, 15],
       ],
     }
   }
@@ -89,9 +90,6 @@ class App extends React.Component {
 
     if (elementActive.row === elementEmpty.row || elementActive.row+1 === elementEmpty.row || elementActive.row-1 === elementEmpty.row) {
       if (elementActive.cell === elementEmpty.cell || elementActive.cell+1 === elementEmpty.cell || elementActive.cell-1 === elementEmpty.cell) {
-        console.log('elementActive : ', elementActive);
-        console.log('elementEmpty : ', elementEmpty);
-        console.log('pass here')
         this.changePosition({
           value,
           elementActive,
