@@ -1,6 +1,6 @@
 # Taquin Game Test
 
-### The Url of the project
+### The url of the project
 [https://jeu-du-taquin.netlify.app/](https://jeu-du-taquin.netlify.app/)
 
 ### To run the project
