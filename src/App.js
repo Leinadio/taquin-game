@@ -47,7 +47,7 @@ class App extends React.Component {
    * @param changeBy
    * @return {*}
    */
-  handleChangePosition = ({ iterateOn, elementActiveOrEmpty, changeBy }) => {
+  changePosition = ({ iterateOn, elementActiveOrEmpty, changeBy }) => {
     return iterateOn.map((row, index) => {
       if (index === elementActiveOrEmpty.row) {
         return row.map((cell, index) => {
@@ -68,14 +68,14 @@ class App extends React.Component {
    * @param elementActive
    * @param elementEmpty
    */
-  changePosition = ({ value, elementActive, elementEmpty }) => {
+  updateTab = ({ value, elementActive, elementEmpty }) => {
     const { tab } = this.state;
-    const tabWithUndefinedPositionChanged = this.handleChangePosition({
+    const tabWithUndefinedPositionChanged = this.changePosition({
       iterateOn: tab,
       elementActiveOrEmpty: elementActive,
       changeBy: undefined
     })
-    const newTab = this.handleChangePosition({
+    const newTab = this.changePosition({
       iterateOn: tabWithUndefinedPositionChanged,
       elementActiveOrEmpty: elementEmpty,
       changeBy: value
@@ -131,7 +131,7 @@ class App extends React.Component {
     if (!this.isNearToEmpty(elementActive, elementEmpty)) {
       return;
     }
-    this.changePosition({
+    this.updateTab({
       value,
       elementActive,
       elementEmpty
