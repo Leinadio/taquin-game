@@ -1,5 +1,8 @@
 # Taquin Game Test
 
+### The Url of the project
+[https://jeu-du-taquin.netlify.app/](https://jeu-du-taquin.netlify.app/)
+
 ### To run the project
 
 ### `npm install`
@@ -10,5 +13,4 @@
 
 Then open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The Url of the project
-[https://jeu-du-taquin.netlify.app/](https://jeu-du-taquin.netlify.app/)
+
